@@ -1,34 +1,61 @@
-import Image from "next/image";
-import { Inter, Maiden_Orange } from "next/font/google";
-
-const inter = Inter({ subsets: ["latin"] });
+import { useState, useEffect } from "react";
+import Inputs from "../pages/components/Inputs";
+import TodoList from "../pages/components/TodoList";
 
 export default function Home() {
+  // Set type of TodoItems object properties
+  interface TodoItem {
+    id: string;
+    title: string;
+    completed: boolean;
+  }
+
+  // Add todo item
+  const addTodo = (title: string) => {
+    setTodoItems((currentTodos) => {
+      return [
+        ...currentTodos,
+        { id: crypto.randomUUID(), title, completed: false },
+      ];
+    });
+  };
+  // For the todo items array
+  const [todoItems, setTodoItems] = useState<TodoItem[]>([]);
+
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     localStorage.setItem("ITEMS", JSON.stringify(todoItems));
+  //   }
+  // }, [todoItems]);
+
+  // Toggle the todo item if done
+  const toggleTodo = (id: string, completed: boolean) => {
+    setTodoItems((currentTodos) => {
+      return currentTodos.map((todo) => {
+        if (todo.id === id) {
+          return { ...todo, completed };
+        }
+        return todo;
+      });
+    });
+  };
+
+  // Delete the todo item
+  const deleteTodo = (id: string) => {
+    setTodoItems((currentTodos) => {
+      return currentTodos.filter((todo) => todo.id !== id);
+    });
+  };
+
   return (
     <main>
-      <div
-        className={`flex justify-center items-center h-screen flex-col mx-20`}
-      >
-        {/* input and button */}
-        <div className={`mb-3`}>
-          <input
-            type="text"
-            placeholder="Add Todo"
-            className={`p-1 rounded-md mr-1 my-2`}
-          />
-          <button className={`bg-cyan-900 p-2 m-1 rounded-md`}>Add Todo</button>
-        </div>
-
-        {/* todo cards */}
-        <div className={`bg-cyan-900 p-3 rounded-md`}>
-          <div
-            className={`flex justify-center items-center bg-cyan-700 rounded-md`}
-          >
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s, when an unknown printer took a galley of type.
-          </div>
-        </div>
+      <div className={`flex items-center h-screen flex-col mx-20 mt-10`}>
+        <Inputs addTodo={addTodo} />
+        <TodoList
+          todoItems={todoItems}
+          toggleTodo={toggleTodo}
+          deleteTodo={deleteTodo}
+        />
       </div>
     </main>
   );
