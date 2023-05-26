@@ -14,9 +14,13 @@ interface TodoListProps {
 }
 
 function TodoList({ todoItems, toggleTodo, deleteTodo }: TodoListProps) {
+  if (!todoItems) {
+    return null;
+  }
+
   return (
     <ul>
-      {todoItems.length === 0 && "No Todos Yet :("}
+      {todoItems.length === 0 && <p>No Todos Yet :(</p>}
       {todoItems.map((todo) => {
         return (
           <TodoItem
